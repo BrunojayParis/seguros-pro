@@ -1370,6 +1370,14 @@ export type Database = {
     }
     Functions: {
       actualizar_estado_polizas: { Args: never; Returns: undefined }
+      create_poliza_con_detalle: {
+        Args: {
+          p_detalle: Json
+          p_poliza: Json
+          p_ramo: Database["public"]["Enums"]["ramo_seguro"]
+        }
+        Returns: string
+      }
       mi_rol: {
         Args: { p_org_id: string }
         Returns: Database["public"]["Enums"]["rol_usuario"]
