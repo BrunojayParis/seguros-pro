@@ -138,6 +138,8 @@ export async function createPolizaAction(
   });
 
   revalidatePath("/dashboard/polizas");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/vencimientos");
   return { data: { id: data }, error: null };
 }
 
@@ -183,6 +185,8 @@ export async function updatePolizaEstadoAction(
 
   revalidatePath("/dashboard/polizas");
   revalidatePath(`/dashboard/polizas/${polizaId}`);
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/vencimientos");
   return { data: null, error: null };
 }
 
@@ -235,5 +239,7 @@ export async function createSiniestroAction(
   revalidatePath(`/dashboard/polizas/${payload.poliza_id}`);
   revalidatePath(`/dashboard/clientes/${payload.cliente_id}`);
   revalidatePath("/dashboard/clientes");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/vencimientos");
   return { data: { id: data.id }, error: null };
 }

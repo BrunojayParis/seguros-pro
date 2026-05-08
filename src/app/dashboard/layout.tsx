@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { getSession } from "@/lib/auth/getSession";
 import { logout, switchOrg } from "@/lib/auth/actions";
+import { getVencimientosProximos } from "@/lib/supabase/vencimientos";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -24,9 +25,20 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     redirect("/login");
   }
 
+  if (!session.currentOrg) {
+    redirect("/login");
+  }
+
   const userDisplayName =
     [session.perfil?.nombre, session.perfil?.apellido].filter(Boolean).join(" ") || session.user.email;
   const avatarFallback = (session.perfil?.nombre?.[0] ?? session.user.email?.[0] ?? "U").toUpperCase();
+  const { data: vencimientosData } = await getVencimientosProximos(session.currentOrg.id, 30);
+  const vencimientosBadge = (vencimientosData ?? []).filter((item) => Number(item.dias_restantes ?? 9999) <= 30).length;
+
+  const resolvedNavItems = navItems.map((item) => ({
+    ...item,
+    badge: item.href === "/dashboard/vencimientos" ? vencimientosBadge : undefined,
+  }));
 
   const switchOrgAction = async (formData: FormData) => {
     "use server";
@@ -79,13 +91,18 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
           ) : null}
 
           <nav className="mt-7 flex flex-1 flex-col gap-2">
-            {navItems.map((item) => (
+            {resolvedNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-xl px-3 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-zinc-100"
+                className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-zinc-100"
               >
-                {item.label}
+                <span>{item.label}</span>
+                {item.badge && item.badge > 0 ? (
+                  <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#e05555] px-1.5 text-[10px] font-semibold text-white">
+                    {item.badge}
+                  </span>
+                ) : null}
               </Link>
             ))}
 
