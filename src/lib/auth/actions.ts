@@ -41,6 +41,10 @@ const mapAuthError = (message?: string) => {
     return "Ya existe una cuenta con ese email";
   }
 
+  if (errorMessage.includes("database error querying schema")) {
+    return "Error de configuracion en Supabase Auth (schema). Revisa el trigger handle_new_user.";
+  }
+
   return "No pudimos completar la operacion. Intentalo nuevamente";
 };
 
@@ -61,7 +65,7 @@ export async function login(formData: FormData): Promise<AuthActionResult> {
     return { error: mapAuthError(error.message) };
   }
 
-  redirect("/dashboard");
+  return { error: null };
 }
 
 export async function register(formData: FormData): Promise<AuthActionResult> {

@@ -52,7 +52,10 @@ export default function LoginPage() {
         .then((result) => {
           if (result?.error) {
             setFormError(result.error);
+            return;
           }
+
+          window.location.assign("/dashboard");
         })
         .catch(() => {
           setFormError("No pudimos iniciar sesion. Intenta nuevamente");
