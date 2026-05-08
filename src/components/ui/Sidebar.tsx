@@ -74,7 +74,7 @@ export function Sidebar({
               }`}
             >
               <span className="flex items-center gap-2">
-                <span className="text-current">{item.icon}</span>
+                <span className={item.href === "/dashboard/siniestros" ? "text-amber-400" : "text-current"}>{item.icon}</span>
                 <span>{item.label}</span>
               </span>
               {item.badge && item.badge > 0 ? (

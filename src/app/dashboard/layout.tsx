@@ -1,17 +1,20 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { AlertTriangle, CalendarClock, FileText, Gauge, Users, Workflow } from "lucide-react";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { getSession } from "@/lib/auth/getSession";
 import { logout, switchOrg } from "@/lib/auth/actions";
+import { createServerClient } from "@/lib/supabase/client";
 import { getVencimientosProximos } from "@/lib/supabase/vencimientos";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/clientes", label: "Clientes" },
-  { href: "/dashboard/polizas", label: "Polizas" },
-  { href: "/dashboard/crm", label: "CRM" },
-  { href: "/dashboard/vencimientos", label: "Vencimientos" },
+  { href: "/dashboard", label: "Dashboard", icon: Gauge },
+  { href: "/dashboard/clientes", label: "Clientes", icon: Users },
+  { href: "/dashboard/polizas", label: "Polizas", icon: FileText },
+  { href: "/dashboard/crm", label: "CRM", icon: Workflow },
+  { href: "/dashboard/siniestros", label: "Siniestros", icon: AlertTriangle },
+  { href: "/dashboard/vencimientos", label: "Vencimientos", icon: CalendarClock },
 ] as const;
 
 type DashboardLayoutProps = {
@@ -34,10 +37,21 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   const avatarFallback = (session.perfil?.nombre?.[0] ?? session.user.email?.[0] ?? "U").toUpperCase();
   const { data: vencimientosData } = await getVencimientosProximos(session.currentOrg.id, 30);
   const vencimientosBadge = (vencimientosData ?? []).filter((item) => Number(item.dias_restantes ?? 9999) <= 30).length;
+  const supabase = await createServerClient();
+  const { count: siniestrosBadge } = await supabase
+    .from("siniestros")
+    .select("id", { count: "exact", head: true })
+    .eq("org_id", session.currentOrg.id)
+    .not("estado", "in", "(pagado,cerrado)");
 
   const resolvedNavItems = navItems.map((item) => ({
     ...item,
-    badge: item.href === "/dashboard/vencimientos" ? vencimientosBadge : undefined,
+    badge:
+      item.href === "/dashboard/vencimientos"
+        ? vencimientosBadge
+        : item.href === "/dashboard/siniestros"
+          ? (siniestrosBadge ?? 0)
+          : undefined,
   }));
 
   const switchOrgAction = async (formData: FormData) => {
@@ -97,7 +111,10 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                 href={item.href}
                 className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-zinc-100"
               >
-                <span>{item.label}</span>
+                <span className="inline-flex items-center gap-2">
+                  <item.icon className={`h-4 w-4 ${item.href === "/dashboard/siniestros" ? "text-amber-400" : ""}`} />
+                  {item.label}
+                </span>
                 {item.badge && item.badge > 0 ? (
                   <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#e05555] px-1.5 text-[10px] font-semibold text-white">
                     {item.badge}
