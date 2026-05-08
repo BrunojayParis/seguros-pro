@@ -105,6 +105,7 @@ export default async function PolizaDetallePage({ params }: PolizaDetallePagePro
         cliente={cliente}
         aseguradora={aseguradora ?? null}
         rol={session.rol}
+        orgId={session.currentOrg.id}
       />
     </section>
   );

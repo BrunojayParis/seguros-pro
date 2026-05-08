@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, DataTable, EmptyState, StatusTimeline, type DataTableColumn } from "@/components/ui";
+import { DocumentosTab } from "@/components/documentos/DocumentosTab";
 import type { RolUsuario } from "@/lib/auth/types";
 import type { Tables } from "@/types/database.types";
 import { EditClienteModal } from "./EditClienteModal";
@@ -12,11 +13,12 @@ type ClienteDetalleProps = {
   polizas: Tables<"polizas">[];
   actividades: Tables<"actividades">[];
   rol: RolUsuario | null;
+  orgId: string;
 };
 
 const tabs = ["datos", "polizas", "documentos", "actividad"] as const;
 
-export function ClienteDetalle({ cliente, polizas, actividades, rol }: ClienteDetalleProps) {
+export function ClienteDetalle({ cliente, polizas, actividades, rol, orgId }: ClienteDetalleProps) {
   const router = useRouter();
   const [tab, setTab] = useState<(typeof tabs)[number]>("datos");
   const [openEdit, setOpenEdit] = useState(false);
@@ -132,7 +134,7 @@ export function ClienteDetalle({ cliente, polizas, actividades, rol }: ClienteDe
       ) : null}
 
       {tab === "documentos" ? (
-        <EmptyState title="Documentos disponibles proximamente" description="Esta seccion sera completada en otro modulo." />
+        <DocumentosTab clienteId={cliente.id} orgId={orgId} rol={rol ?? "asistente"} />
       ) : null}
 
       {tab === "actividad" ? (

@@ -53,6 +53,7 @@ export default async function ClienteDetallePage({ params }: ClienteDetallePageP
         polizas={polizasResult.data ?? []}
         actividades={actividadesResult.data ?? []}
         rol={session.rol}
+        orgId={session.currentOrg.id}
       />
     </section>
   );

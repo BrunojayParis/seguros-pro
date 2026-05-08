@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { FileText, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Badge, EmptyState, StatusTimeline } from "@/components/ui";
+import { DocumentosTab } from "@/components/documentos/DocumentosTab";
 import type { RolUsuario } from "@/lib/auth/types";
 import type { Tables } from "@/types/database.types";
 import type { PolizaWithDetalle } from "@/lib/supabase/polizas";
@@ -16,6 +17,7 @@ type PolizaDetalleProps = {
   cliente: Tables<"clientes"> | null;
   aseguradora: Tables<"aseguradoras"> | null;
   rol: RolUsuario | null;
+  orgId: string;
 };
 
 const tabs = ["resumen", "cliente", "documentos", "siniestros", "actividad"] as const;
@@ -35,16 +37,6 @@ function ramoVariant(ramo: string) {
   return ramo;
 }
 
-function DocumentosTab({ polizaId, total }: { polizaId: string; total: number }) {
-  return (
-    <EmptyState
-      title="Documentos disponibles próximamente"
-      description={`Poliza ${polizaId} · ${total} documentos`}
-      icon={<FileText className="h-5 w-5" />}
-    />
-  );
-}
-
 export function PolizaDetalle({
   poliza,
   actividades,
@@ -53,6 +45,7 @@ export function PolizaDetalle({
   cliente,
   aseguradora,
   rol,
+  orgId,
 }: PolizaDetalleProps) {
   const [tab, setTab] = useState<(typeof tabs)[number]>("resumen");
 
@@ -205,7 +198,14 @@ export function PolizaDetalle({
         </div>
       ) : null}
 
-      {tab === "documentos" ? <DocumentosTab polizaId={poliza.id} total={documentos.length} /> : null}
+      {tab === "documentos" ? (
+        <DocumentosTab
+          clienteId={poliza.cliente_id}
+          polizaId={poliza.id}
+          orgId={orgId}
+          rol={rol ?? "asistente"}
+        />
+      ) : null}
 
       {tab === "siniestros" ? (
         <div className="space-y-3">
