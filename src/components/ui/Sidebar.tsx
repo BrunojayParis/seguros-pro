@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Settings } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 
 interface SidebarItem {
@@ -36,6 +37,16 @@ export function Sidebar({
   onSwitchOrg,
 }: SidebarProps) {
   const [nombre = "Usuario", apellido] = userName?.trim().split(/\s+/, 2) ?? [];
+  const adminItem =
+    userRol === "admin"
+      ? items.find((item) => item.href === "/dashboard/admin") ?? {
+          label: "Admin",
+          href: "/dashboard/admin",
+          icon: <Settings className="h-4 w-4" />,
+          badge: undefined,
+        }
+      : null;
+  const regularItems = (items ?? []).filter((item) => item.href !== "/dashboard/admin");
 
   return (
     <aside className="flex h-full w-72 shrink-0 flex-col border-r border-[#272724] bg-[#161614] p-4">
@@ -61,7 +72,7 @@ export function Sidebar({
       ) : null}
 
       <nav className="mt-6 flex flex-1 flex-col gap-1.5">
-        {(items ?? []).map((item) => {
+        {regularItems.map((item) => {
           const isActive = currentPath === item.href || currentPath.startsWith(`${item.href}/`);
           return (
             <Link
@@ -85,6 +96,27 @@ export function Sidebar({
             </Link>
           );
         })}
+
+        {adminItem ? (
+          <Link
+            href={adminItem.href}
+            className={`mt-auto flex h-10 items-center justify-between rounded-xl px-3 text-sm transition ${
+              currentPath === adminItem.href || currentPath.startsWith(`${adminItem.href}/`)
+                ? "border border-[#2f5696] bg-[#1a5fcc]/20 text-[#d9e8ff]"
+                : "text-[#9e9d94] hover:bg-[#1a1a18] hover:text-[#f0efe9]"
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-current">{adminItem.icon}</span>
+              <span>{adminItem.label}</span>
+            </span>
+            {adminItem.badge && adminItem.badge > 0 ? (
+              <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#e05555] px-1.5 text-[10px] font-semibold text-white">
+                {adminItem.badge}
+              </span>
+            ) : null}
+          </Link>
+        ) : null}
       </nav>
 
       <div className="rounded-2xl border border-[#272724] bg-[#1a1a18] p-3">
