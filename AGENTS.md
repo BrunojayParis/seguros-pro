@@ -22,6 +22,9 @@
 - Supabase dependencies are installed (`@supabase/ssr`, `@supabase/supabase-js`), but no app client wiring exists yet.
 - `src/types/database.types.ts` is generated Supabase schema output; avoid hand-editing it unless the schema source is unavailable.
 - The repo has a linked Supabase project under `supabase/.temp/`, but no migrations or `supabase/config.toml` are present.
+- ALWAYS work against the DEV Supabase project (`fpalmlinfotpkpmglhlk`, `seguros-pro`).
+- NEVER run queries, migrations, branch operations, or writes directly against the PRODUCTION project (`tjpentaydzmfgvmndnds`, `seguros-pro-prod`).
+- If local MCP config points to production, switch it back to DEV before doing any database operation.
 
 ## Local Config Gotchas
 - Supabase MCP is configured in root `opencode.json` as a project-scoped, read-only remote MCP; run `opencode mcp auth supabase` if OpenCode needs OAuth authorization.

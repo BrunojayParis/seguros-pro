@@ -1,10 +1,11 @@
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { getEnvVar } from "@/lib/env";
 import type { Database } from "@/types/database.types";
 
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const getSupabaseUrl = () => getEnvVar("NEXT_PUBLIC_SUPABASE_URL");
+const getSupabaseAnonKey = () => getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
 export async function createAuthServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = await cookies();
