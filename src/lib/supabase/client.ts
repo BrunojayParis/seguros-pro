@@ -4,9 +4,10 @@ import {
 } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
+import { getEnvVar } from "@/lib/env";
 
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const getSupabaseUrl = () => getEnvVar("NEXT_PUBLIC_SUPABASE_URL");
+const getSupabaseAnonKey = () => getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
 export async function createServerClient(): Promise<SupabaseClient<Database>> {
   const { cookies } = await import("next/headers");
