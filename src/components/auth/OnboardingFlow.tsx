@@ -359,12 +359,12 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
   return (
     <div className="flex min-h-screen bg-[#0e0e0d] text-[#f0efe8]">
       <aside className="sticky top-0 hidden h-screen w-[300px] shrink-0 flex-col border-r border-[#2c2c28] bg-[#161614] px-7 py-8 lg:flex">
-        <div className="mb-12 flex items-center gap-2.5">
+        <Link href="/" className="mb-12 flex w-fit items-center gap-2.5" aria-label="Volver al inicio">
           <div className="grid h-[30px] w-[30px] place-content-center rounded-lg border border-[rgba(91,156,246,0.2)] bg-[rgba(26,95,204,0.12)]">
             <Shield className="h-4 w-4 text-[#5b9cf6]" />
           </div>
           <span className="text-[15px] font-medium">SegurosPro</span>
-        </div>
+        </Link>
 
         <div className="flex flex-1 flex-col gap-1">
           {stepItems.map((item, index) => {
@@ -417,6 +417,13 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
 
       <main className="flex flex-1 justify-center overflow-y-auto px-5 py-8 sm:px-8 sm:py-12">
         <div className="w-full max-w-[760px]">
+          <Link href="/" className="mb-6 inline-flex items-center gap-2.5 lg:hidden" aria-label="Volver al inicio">
+            <span className="grid h-[30px] w-[30px] place-content-center rounded-lg border border-[rgba(91,156,246,0.2)] bg-[rgba(26,95,204,0.12)]">
+              <Shield className="h-4 w-4 text-[#5b9cf6]" />
+            </span>
+            <span className="text-[15px] font-medium">SegurosPro</span>
+          </Link>
+
           {finalState.status === "pending_email_confirmation" ? (
             <section className="mx-auto max-w-[560px] rounded-2xl border border-[#2c2c28] bg-[#10100f] p-8 text-center">
               <div className="mx-auto grid h-16 w-16 place-content-center rounded-full border border-[rgba(74,222,128,0.3)] bg-[rgba(22,163,74,0.1)]">

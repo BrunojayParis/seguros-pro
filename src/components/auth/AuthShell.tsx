@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Shield } from "lucide-react";
 
 type AuthShellProps = {
@@ -24,12 +25,12 @@ export function AuthShell({ title, subtitle, children }: AuthShellProps) {
     <div className="flex min-h-screen bg-[#0c0c0c] text-zinc-100">
       <div className="w-full border-zinc-800/80 px-5 py-6 sm:px-8 lg:w-[52%] lg:border-r lg:px-12 lg:py-10">
         <div className="mx-auto flex h-full w-full max-w-[520px] flex-col">
-          <div className="mb-10 flex items-center gap-3 sm:mb-14">
+          <Link href="/" className="mb-10 flex w-fit items-center gap-3 sm:mb-14" aria-label="Volver al inicio">
             <div className="grid h-10 w-10 place-content-center rounded-xl bg-blue-600/35 text-blue-300">
               <Shield className="h-5 w-5" strokeWidth={1.8} />
             </div>
             <span className="text-2xl font-semibold tracking-tight">SegurosPro</span>
-          </div>
+          </Link>
 
           <div className="mb-6 space-y-1.5">
             <h1 className="text-3xl font-semibold tracking-tight text-zinc-50">{title}</h1>
