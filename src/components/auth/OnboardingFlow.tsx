@@ -461,20 +461,9 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
           ) : (
             <>
               <header className="mb-8">
-                <div className="mb-2 flex items-center justify-between gap-3 lg:block">
-                  <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#5b9cf6]">
-                    Paso {step + 1} de {stepItems.length} - {stepItems[step].label}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={handleMobileAdvance}
-                    disabled={pending || oauthPending}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[rgba(91,156,246,0.25)] bg-[rgba(26,95,204,0.12)] px-3 text-xs font-medium text-[#5b9cf6] transition hover:bg-[rgba(26,95,204,0.2)] disabled:cursor-not-allowed disabled:opacity-60 lg:hidden"
-                  >
-                    <Check className="h-3.5 w-3.5" />
-                    OK
-                  </button>
-                </div>
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#5b9cf6]">
+                  Paso {step + 1} de {stepItems.length} - {stepItems[step].label}
+                </p>
                 {step === 0 ? (
                   <>
                     <h1 className="mt-3 font-[var(--font-dm-serif)] text-5xl leading-[1.1] text-white">Empeza en segundos</h1>
@@ -961,6 +950,22 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
                   </div>
                 </section>
               ) : null}
+
+              <div className="mt-6 lg:hidden">
+                <button
+                  type="button"
+                  onClick={handleMobileAdvance}
+                  disabled={pending || oauthPending}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a5fcc] px-5 text-base font-medium text-white transition hover:bg-[#1450b0] disabled:cursor-not-allowed disabled:opacity-65"
+                >
+                  {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                  {step === 4
+                    ? hasSession
+                      ? "Listo, ir a mi panel"
+                      : "Listo, finalizar"
+                    : "Listo, continuar"}
+                </button>
+              </div>
             </>
           )}
         </div>
