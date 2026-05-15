@@ -356,6 +356,15 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
     });
   };
 
+  const handleMobileAdvance = () => {
+    if (step === 4) {
+      handleComplete();
+      return;
+    }
+
+    nextStep(step);
+  };
+
   return (
     <div className="flex min-h-screen bg-[#0e0e0d] text-[#f0efe8]">
       <aside className="sticky top-0 hidden h-screen w-[300px] shrink-0 flex-col border-r border-[#2c2c28] bg-[#161614] px-7 py-8 lg:flex">
@@ -941,6 +950,22 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
                   </div>
                 </section>
               ) : null}
+
+              <div className="mt-6 lg:hidden">
+                <button
+                  type="button"
+                  onClick={handleMobileAdvance}
+                  disabled={pending || oauthPending}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1a5fcc] px-5 text-base font-medium text-white transition hover:bg-[#1450b0] disabled:cursor-not-allowed disabled:opacity-65"
+                >
+                  {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                  {step === 4
+                    ? hasSession
+                      ? "Listo, ir a mi panel"
+                      : "Listo, finalizar"
+                    : "Listo, continuar"}
+                </button>
+              </div>
             </>
           )}
         </div>
