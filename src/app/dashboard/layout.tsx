@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   }
 
   if (!session.currentOrg) {
-    redirect("/login");
+    redirect("/register");
   }
 
   const userDisplayName =

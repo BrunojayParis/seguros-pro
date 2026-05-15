@@ -7,7 +7,8 @@ const SUPABASE_URL = getEnvVar("NEXT_PUBLIC_SUPABASE_URL");
 const SUPABASE_ANON_KEY = getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
 const isProtectedRoute = (pathname: string) => pathname.startsWith("/dashboard");
-const isAuthRoute = (pathname: string) => pathname === "/login" || pathname === "/register";
+const isLoginRoute = (pathname: string) => pathname === "/login";
+const isRegisterRoute = (pathname: string) => pathname === "/register";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -45,13 +46,39 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  let hasActiveOrg = false;
+
+  if (user) {
+    const { data } = await supabase
+      .from("org_usuarios")
+      .select("id")
+      .eq("usuario_id", user.id)
+      .eq("activo", true)
+      .limit(1)
+      .maybeSingle();
+
+    hasActiveOrg = Boolean(data);
+  }
+
   if (!user && isProtectedRoute(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (user && isAuthRoute(pathname)) {
+  if (user && isProtectedRoute(pathname) && !hasActiveOrg) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/register";
+    return NextResponse.redirect(url);
+  }
+
+  if (user && isLoginRoute(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = hasActiveOrg ? "/dashboard" : "/register";
+    return NextResponse.redirect(url);
+  }
+
+  if (user && isRegisterRoute(pathname) && hasActiveOrg) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
